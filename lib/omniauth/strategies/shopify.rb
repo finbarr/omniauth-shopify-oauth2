@@ -29,6 +29,7 @@ module OmniAuth
       option :setup, proc { |env|
         request = Rack::Request.new(env)
         env['omniauth.strategy'].options[:client_options][:site] = "https://#{request.GET['shop']}"
+        byebug
         env['omniauth.strategy'].options[:per_user_permissions] = request.GET['online'].to_i == 1
       }
 
@@ -128,6 +129,7 @@ module OmniAuth
 
       def authorize_params
         super.tap do |params|
+          byebug
           params[:scope] = normalized_scopes(params[:scope] || DEFAULT_SCOPE).join(SCOPE_DELIMITER)
           params[:grant_options] = ['per-user'] if options[:per_user_permissions]
         end
