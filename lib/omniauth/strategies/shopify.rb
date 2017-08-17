@@ -29,6 +29,7 @@ module OmniAuth
       option :setup, proc { |env|
         request = Rack::Request.new(env)
         env['omniauth.strategy'].options[:client_options][:site] = "https://#{request.GET['shop']}"
+        env['omniauth.strategy'].options[:per_user_permissions] = request.GET['online'].to_i == 1
       }
 
       uid { URI.parse(options[:client_options][:site]).host }
