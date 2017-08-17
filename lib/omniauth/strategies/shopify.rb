@@ -29,7 +29,6 @@ module OmniAuth
       option :setup, proc { |env|
         request = Rack::Request.new(env)
         env['omniauth.strategy'].options[:client_options][:site] = "https://#{request.GET['shop']}"
-        byebug
         env['omniauth.strategy'].options[:per_user_permissions] = request.GET['online'].to_i == 1
       }
 
@@ -116,9 +115,10 @@ module OmniAuth
         unless valid_scope?(token)
           return fail!(:invalid_scope, CallbackError.new(:invalid_scope, "Scope does not match, it may have been tampered with."))
         end
-        unless valid_permissions?(token)
-          return fail!(:invalid_permissions, CallbackError.new(:invalid_permissions, "Requested API access mode does not match."))
-        end
+
+        # unless valid_permissions?(token)
+        #   return fail!(:invalid_permissions, CallbackError.new(:invalid_permissions, "Requested API access mode does not match."))
+        # end
 
         super
       end
@@ -129,7 +129,6 @@ module OmniAuth
 
       def authorize_params
         super.tap do |params|
-          byebug
           params[:scope] = normalized_scopes(params[:scope] || DEFAULT_SCOPE).join(SCOPE_DELIMITER)
           params[:grant_options] = ['per-user'] if options[:per_user_permissions]
         end
